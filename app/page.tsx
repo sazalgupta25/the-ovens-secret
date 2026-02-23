@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { MenuPreviewCard } from "./components/MenuPreviewCard";
 
 export const metadata: Metadata = {
   title: "Artisan Bakery | The Ovens Secret - Premium Sourdough & Breads",
@@ -163,6 +164,8 @@ export default function Home() {
             </article>
           ))}
         </section>
+
+        <MenuPreviewCard />
 
         {/* About Preview */}
         <section className="bg-gradient-to-r from-amber-50 to-orange-50 p-12 rounded-lg mb-12">

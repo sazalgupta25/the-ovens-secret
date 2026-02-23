@@ -1,224 +1,253 @@
-import type { Metadata } from 'next';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+"use client";
 
-export const metadata: Metadata = {
-  title: 'Menu | Artisan Breads | The Ovens Secret',
-  description:
-    'Browse our artisan bread menu: sourdough, focaccia, specialty breads, and custom orders. Premium ingredients, traditional methods.',
-  keywords: [
-    'artisan bread menu',
-    'sourdough bread',
-    'focaccia bread',
-    'premium bread',
-    'specialty breads',
-    'custom bread orders',
-  ],
-  openGraph: {
-    title: 'Our Artisan Bread Menu | The Ovens Secret',
-    description: 'Premium artisan breads crafted with tradition and care',
-    type: 'website',
-    locale: 'en_US',
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+import { useState } from "react";
+import { menu, businessInfo, MenuCategory } from "../data/menu";
 
-// Menu data from PDF
-const menuCategories = [
-  {
-    id: 'sourdough',
-    name: 'Sourdough Collection',
-    description: 'Our signature sourdough breads with authentic flavors',
-    items: [
-      {
-        name: 'Classic Sourdough',
-        description: 'Traditional French-style sourdough with tangy flavor and crispy crust',
-        price: '$6.50',
-        details: '500g | 48-hour fermentation | Naturally leavened',
-      },
-      {
-        name: 'Sourdough with Seeds',
-        description: 'Premium sourdough topped with sunflower, pumpkin, and sesame seeds',
-        price: '$7.50',
-        details: '550g | Mixed organic seeds | High fiber content',
-      },
-      {
-        name: 'Charcoal Sourdough',
-        description: 'Gourmet sourdough infused with activated charcoal for a unique appearance and mild earthy notes',
-        price: '$8.00',
-        details: '500g | Food-grade charcoal | Premium ingredient',
-      },
-    ],
-  },
-  {
-    id: 'focaccia',
-    name: 'Focaccia Selection',
-    description: 'Italian-inspired focaccia breads with premium toppings',
-    items: [
-      {
-        name: 'Rosemary & Sea Salt',
-        description: 'Classic focaccia with fresh rosemary and Maldon sea salt',
-        price: '$5.50',
-        details: '400g | Italian olive oil | Fresh herbs',
-      },
-      {
-        name: 'Garlic & Herb',
-        description: 'Infused with roasted garlic and mixed Italian herbs',
-        price: '$6.00',
-        details: '400g | Roasted garlic | Oregano & basil',
-      },
-      {
-        name: 'Olive & Tomato',
-        description: 'Mediterranean focaccia with Kalamata olives and sun-dried tomatoes',
-        price: '$6.50',
-        details: '420g | Kalamata olives | Sun-dried tomatoes',
-      },
-      {
-        name: 'Caramelized Onion & Brie',
-        description: 'Indulgent focaccia with sweet caramelized onions and creamy Brie cheese',
-        price: '$7.50',
-        details: '450g | Artisan Brie | 4-hour caramelization',
-      },
-    ],
-  },
-  {
-    id: 'specialty',
-    name: 'Specialty Breads',
-    description: 'Unique artisan breads crafted with premium ingredients',
-    items: [
-      {
-        name: 'Whole Wheat',
-        description: 'Nutty whole wheat bread with sprouted grains and honey notes',
-        price: '$5.00',
-        details: '550g | Sprouted grains | High protein',
-      },
-      {
-        name: 'Ciabatta',
-        description: 'Authentic Italian ciabatta with airy crumb and crispy exterior',
-        price: '$5.50',
-        details: '480g | 20-hour fermentation | Italian flour',
-      },
-      {
-        name: 'Rye & Caraway',
-        description: 'Traditional European-style rye bread with caraway seeds',
-        price: '$5.50',
-        details: '550g | Organic rye | Caraway seeds',
-      },
-      {
-        name: 'Multigrain Harvest',
-        description: 'Hearty blend of oats, millet, flax, and sunflower seeds',
-        price: '$6.50',
-        details: '600g | 7 grains | Vegan-friendly',
-      },
-    ],
-  },
-  {
-    id: 'custom',
-    name: 'Custom Orders',
-    description: 'Create your perfect bread with personalized options',
-    items: [
-      {
-        name: 'Build Your Own Bread',
-        description: 'Choose your base, mix-ins, and toppings for a truly unique loaf',
-        price: 'From $8.00',
-        details: 'Minimum 48-hour notice | Dietary accommodations available',
-      },
-      {
-        name: 'Bulk Orders',
-        description: 'Perfect for events, restaurants, or catering. We offer wholesale pricing.',
-        price: 'Custom quote',
-        details: '5+ loaves | Corporate discounts | Delivery available',
-      },
-      {
-        name: 'Gluten-Free Line',
-        description: 'Premium gluten-free breads made with dedicated equipment',
-        price: '$8.50 each',
-        details: 'Certified gluten-free | Nut-free facility',
-      },
-    ],
-  },
-];
-
-export default function MenuPage() {
+// ---------------------------------------------------------------------------
+// Tab navigation component
+// ---------------------------------------------------------------------------
+function CategoryTabs({
+  categories,
+  activeId,
+  onSelect,
+}: {
+  categories: MenuCategory[];
+  activeId: string;
+  onSelect: (id: string) => void;
+}) {
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
-      <main className="max-w-6xl mx-auto px-4 py-12">
-        {/* Page Header */}
-        <section className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-amber-900 mb-4">Our Menu</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Discover our artisan bread collection, carefully crafted with premium ingredients and traditional methods.
-          </p>
-        </section>
-
-        {/* Display all categories */}
-        {menuCategories.map((category) => (
-          <section key={category.id} className="mb-16">
-            <div className="mb-8">
-              <h2 className="text-3xl font-bold text-amber-900 mb-2">
-                {category.name}
-              </h2>
-              <p className="text-gray-600 text-lg">
-                {category.description}
-              </p>
-            </div>
-
-            {/* Menu Items Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-              {category.items.map((item, index) => (
-                <article
-                  key={index}
-                  className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-lg border-2 border-amber-200 hover:border-amber-400 transition"
-                >
-                  <div className="flex justify-between items-start mb-3">
-                    <h3 className="text-2xl font-bold text-amber-900">
-                      {item.name}
-                    </h3>
-                    <span className="text-xl font-bold text-amber-800 whitespace-nowrap ml-4">
-                      {item.price}
-                    </span>
-                  </div>
-                  <p className="text-gray-700 mb-4 text-base leading-relaxed">
-                    {item.description}
-                  </p>
-                  <div className="pt-4 border-t border-amber-200">
-                    <p className="text-sm text-gray-600">
-                      <span className="font-semibold">Details:</span> {item.details}
-                    </p>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-        ))}
-
-        {/* Call to Action */}
-        <section className="bg-gradient-to-r from-amber-900 to-amber-800 text-white p-12 rounded-lg text-center mb-12">
-          <h2 className="text-3xl font-bold mb-4">Ready to Order?</h2>
-          <p className="text-lg mb-6 opacity-90">
-            Contact us today for local pickups, deliveries, or custom orders.
-          </p>
-          <div className="flex gap-4 justify-center flex-wrap">
-            <a
-              href="/contact"
-              className="bg-white text-amber-900 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
+    <div className="sticky top-0 z-20 bg-[#fdf6ee] border-b border-[#e8d5b0] shadow-sm">
+      <div className="max-w-5xl mx-auto px-4 overflow-x-auto">
+        <div className="flex gap-1 py-3 min-w-max">
+          {categories.map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => onSelect(cat.id)}
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 whitespace-nowrap ${
+                activeId === cat.id
+                  ? "bg-[#c0392b] text-white shadow-md scale-105"
+                  : "bg-white text-[#7b3f2e] border border-[#e8c9a0] hover:bg-[#faebd7] hover:border-[#c0392b]"
+              }`}
             >
-              Place Order
-            </a>
-            <a
-              href="tel:+1234567890"
-              className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-amber-900 transition"
-            >
-              Call Us
-            </a>
-          </div>
-        </section>
-      </main>
-      <Footer />
+              <span className="mr-1">{cat.emoji}</span>
+              {cat.title}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Individual menu item row
+// ---------------------------------------------------------------------------
+function MenuItemRow({
+  name,
+  price,
+  priceNote,
+}: {
+  name: string;
+  price: number;
+  priceNote?: string;
+}) {
+  return (
+    <div className="flex items-start justify-between gap-4 py-3 border-b border-dashed border-[#e8d5b0] last:border-0 group hover:bg-[#fdf0e0] transition-colors duration-150 px-2 rounded-lg -mx-2">
+      <span className="text-[#5c2d1e] font-medium text-sm leading-snug flex-1">
+        {name}
+      </span>
+      <span className="text-[#c0392b] font-bold text-sm whitespace-nowrap shrink-0">
+        ₹{price.toLocaleString("en-IN")}
+        {priceNote && (
+          <span className="text-[#a0522d] font-normal text-xs ml-1">
+            /{priceNote}
+          </span>
+        )}
+      </span>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Section block within a category
+// ---------------------------------------------------------------------------
+function MenuSectionBlock({
+  title,
+  servingSize,
+  items,
+  note,
+}: {
+  title: string;
+  servingSize?: string;
+  items: { name: string; price: number; priceNote?: string }[];
+  note?: string;
+}) {
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-[#f0ddc0] overflow-hidden mb-6">
+      {/* Section header */}
+      <div className="bg-[#c0392b] px-5 py-3">
+        <h3 className="text-white font-bold text-base tracking-wide">{title}</h3>
+        {servingSize && (
+          <p className="text-[#f9c5b5] text-xs mt-0.5 flex items-center gap-1">
+            <span>🍗</span> {servingSize}
+          </p>
+        )}
+      </div>
+
+      {/* Items */}
+      <div className="px-5 py-2">
+        {items.map((item, idx) => (
+          <MenuItemRow
+            key={idx}
+            name={item.name}
+            price={item.price}
+            priceNote={item.priceNote}
+          />
+        ))}
+      </div>
+
+      {/* Footer note */}
+      {note && (
+        <div className="bg-[#fff8f0] border-t border-[#f0ddc0] px-5 py-3">
+          <p className="text-[#8b4513] text-xs leading-relaxed">
+            <span className="font-semibold">📌 Note: </span>
+            {note}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Main Menu Page
+// ---------------------------------------------------------------------------
+export default function MenuPage() {
+  const [activeCategory, setActiveCategory] = useState(menu[0].id);
+
+  const currentCategory = menu.find((c) => c.id === activeCategory)!;
+
+  return (
+    <main className="min-h-screen bg-[#fdf6ee]">
+      {/* ------------------------------------------------------------------ */}
+      {/* Hero header */}
+      {/* ------------------------------------------------------------------ */}
+      <div
+        className="relative bg-[#c0392b] text-white text-center py-12 px-4 overflow-hidden"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle at 20% 50%, #922b21 0%, transparent 60%), radial-gradient(circle at 80% 20%, #e74c3c 0%, transparent 50%)",
+        }}
+      >
+        {/* Decorative circles */}
+        <div className="absolute -top-8 -left-8 w-32 h-32 rounded-full bg-white opacity-5" />
+        <div className="absolute -bottom-6 -right-6 w-24 h-24 rounded-full bg-white opacity-5" />
+
+        <div className="relative z-10">
+          <p className="text-[#f9c5b5] text-sm font-medium tracking-widest uppercase mb-1">
+            By {businessInfo.baker}
+          </p>
+          <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-2">
+            Our Menu
+          </h1>
+          <p className="text-[#fcd9ce] text-sm max-w-md mx-auto">
+            Freshly baked on the same day · No preservatives · Home delivery
+            within 5 km
+          </p>
+          <a
+            href={`https://wa.me/91${businessInfo.whatsapp}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 mt-5 bg-white text-[#c0392b] font-bold px-5 py-2.5 rounded-full text-sm shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="w-4 h-4 fill-current"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+            </svg>
+            Order on WhatsApp
+          </a>
+        </div>
+      </div>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Category tabs */}
+      {/* ------------------------------------------------------------------ */}
+      <CategoryTabs
+        categories={menu}
+        activeId={activeCategory}
+        onSelect={setActiveCategory}
+      />
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Menu content */}
+      {/* ------------------------------------------------------------------ */}
+      <div className="max-w-5xl mx-auto px-4 py-8">
+        {/* Category title */}
+        <div className="flex items-center gap-3 mb-6">
+          <span className="text-4xl">{currentCategory.emoji}</span>
+          <div>
+            <h2 className="text-2xl font-extrabold text-[#7b1f1f] leading-tight">
+              {currentCategory.title}
+            </h2>
+            <p className="text-[#a0522d] text-xs">
+              {currentCategory.sections.length} section
+              {currentCategory.sections.length > 1 ? "s" : ""} ·{" "}
+              {currentCategory.sections.reduce(
+                (sum, s) => sum + s.items.length,
+                0
+              )}{" "}
+              items
+            </p>
+          </div>
+        </div>
+
+        {/* Two-column layout on larger screens */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {currentCategory.sections.map((section, idx) => (
+            <div
+              key={idx}
+              className={
+                // If section has many items, span full width
+                section.items.length > 8 ? "md:col-span-2" : ""
+              }
+            >
+              <MenuSectionBlock
+                title={section.title}
+                servingSize={section.servingSize}
+                items={section.items}
+                note={section.note}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* Footer */}
+      {/* ------------------------------------------------------------------ */}
+      <footer className="bg-[#7b1f1f] text-white text-center py-8 px-4 mt-8">
+        <div className="max-w-md mx-auto space-y-2">
+          <p className="font-bold text-lg">{businessInfo.name}</p>
+          <p className="text-[#f9c5b5] text-sm">{businessInfo.baker}</p>
+          <p className="text-[#f9c5b5] text-sm">{businessInfo.address}</p>
+          <a
+            href={`tel:+91${businessInfo.phone}`}
+            className="inline-block text-white font-bold text-base hover:text-[#f9c5b5] transition-colors"
+          >
+            📞 {businessInfo.phone}
+          </a>
+          <div className="pt-2 space-y-1">
+            {businessInfo.taglines.map((t, i) => (
+              <p key={i} className="text-[#f9c5b5] text-xs">
+                {t}
+              </p>
+            ))}
+          </div>
+        </div>
+      </footer>
+    </main>
   );
 }
