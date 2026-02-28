@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  // Removed: output: "standalone" - using default for Docker compatibility
 
   // Image optimization
   images: {

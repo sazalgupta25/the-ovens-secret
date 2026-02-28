@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Header from "../components/Header";
 import { menu, businessInfo, MenuCategory } from "../data/menu";
 
 // ---------------------------------------------------------------------------
@@ -13,7 +14,7 @@ function CategoryTabs({
 }: {
   categories: MenuCategory[];
   activeId: string;
-  onSelect: (id: string) => void;
+  onSelect: (id: string) => void; // eslint-disable-line no-unused-vars
 }) {
   return (
     <div className="sticky top-0 z-20 bg-[#fdf6ee] border-b border-[#e8d5b0] shadow-sm">
@@ -128,10 +129,12 @@ export default function MenuPage() {
   const currentCategory = menu.find((c) => c.id === activeCategory)!;
 
   return (
-    <main className="min-h-screen bg-[#fdf6ee]">
-      {/* ------------------------------------------------------------------ */}
-      {/* Hero header */}
-      {/* ------------------------------------------------------------------ */}
+    <>
+      <Header />
+      <main className="min-h-screen bg-[#fdf6ee]">
+        {/* ------------------------------------------------------------------ */}
+        {/* Hero header */}
+        {/* ------------------------------------------------------------------ */}
       <div
         className="relative bg-[#c0392b] text-white text-center py-12 px-4 overflow-hidden"
         style={{
@@ -248,6 +251,7 @@ export default function MenuPage() {
           </div>
         </div>
       </footer>
-    </main>
+      </main>
+    </>
   );
 }

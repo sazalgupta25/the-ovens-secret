@@ -173,14 +173,14 @@ export default function Home() {
             Why Choose The Ovens Secret?
           </h2>
           <p className="text-gray-700 text-lg mb-4 leading-relaxed">
-            With over a decade of experience in artisan baking, we've curated
+            With over a decade of experience in artisan baking, we&rsquo;ve curated
             the finest collection of recipes, techniques, and tips that will
             elevate your baking to professional standards. Our commitment to
             quality, traditional fermentation methods, and premium ingredients
             sets us apart.
           </p>
           <p className="text-gray-700 text-lg leading-relaxed">
-            Whether you're a beginner just starting your bread-baking journey
+            Whether you&rsquo;re a beginner just starting your bread-baking journey
             or an advanced baker seeking to refine your craft, our comprehensive
             guides and expert insights will help you master the art of creating
             perfect bread every time.

@@ -24,7 +24,7 @@ export default function AboutPage() {
               have been perfected over decades of professional baking.
             </p>
             <p className="text-gray-700">
-              We're dedicated to helping home bakers and professionals alike
+              We&rsquo;re dedicated to helping home bakers and professionals alike
               master the craft of artisan baking, creating exceptional bread
               that delights the senses and nourishes the body.
             </p>

@@ -1,27 +1,29 @@
+import Link from "next/link";
+
 export default function Header() {
   return (
     <header className="bg-amber-900 text-white shadow-lg sticky top-0 z-50">
       <nav className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex items-center gap-8">
-          <a href="/" className="text-3xl font-bold hover:text-amber-100 transition">
+          <Link href="/" className="text-3xl font-bold hover:text-amber-100 transition">
             🔥 The Ovens Secret
-          </a>
+          </Link>
           <ul className="hidden md:flex gap-6 font-semibold">
             <li>
-              <a
+              <Link
                 href="/"
                 className="hover:text-amber-200 transition duration-200"
               >
                 Home
-              </a>
+              </Link>
             </li>
             <li>
-              <a
+              <Link
                 href="/menu"
                 className="hover:text-amber-200 transition duration-200"
               >
                 Menu
-              </a>
+              </Link>
             </li>
             <li>
               <a

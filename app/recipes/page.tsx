@@ -174,7 +174,7 @@ export default function RecipesPage() {
         <section className="bg-gradient-to-r from-amber-900 to-orange-800 text-white p-12 rounded-lg text-center">
           <h2 className="text-3xl font-bold mb-4">Want to Share Your Recipe?</h2>
           <p className="text-lg mb-8 opacity-90">
-            Have a signature bread recipe? We'd love to feature it in our
+            Have a signature bread recipe? We&rsquo;d love to feature it in our
             community collection.
           </p>
           <a

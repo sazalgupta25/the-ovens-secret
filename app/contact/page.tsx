@@ -2,7 +2,8 @@
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
+import type React from "react";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -12,8 +13,13 @@ export default function ContactPage() {
     message: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(
+    null
+  );
+
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -22,11 +28,39 @@ export default function ContactPage() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    alert("Thank you for your message! We'll get back to you soon.");
-    setFormData({ name: "", email: "", subject: "", message: "" });
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to send message");
+      }
+
+      setMessage({
+        type: "success",
+        text: data.message || "Thank you for your message! We'll get back to you soon.",
+      });
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text: error instanceof Error ? error.message : "An error occurred. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -85,6 +119,18 @@ export default function ContactPage() {
 
           {/* Contact Form */}
           <div>
+            {message && (
+              <div
+                className={`mb-4 p-4 rounded-lg ${
+                  message.type === "success"
+                    ? "bg-green-100 text-green-800 border border-green-300"
+                    : "bg-red-100 text-red-800 border border-red-300"
+                }`}
+              >
+                {message.text}
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
@@ -95,8 +141,9 @@ export default function ContactPage() {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
+                  disabled={loading}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-900"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-900 disabled:bg-gray-100 disabled:cursor-not-allowed"
                   placeholder="Your name"
                 />
               </div>
@@ -109,8 +156,9 @@ export default function ContactPage() {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
+                  disabled={loading}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-900"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-900 disabled:bg-gray-100 disabled:cursor-not-allowed"
                   placeholder="your@email.com"
                 />
               </div>
@@ -123,8 +171,9 @@ export default function ContactPage() {
                   name="subject"
                   value={formData.subject}
                   onChange={handleChange}
+                  disabled={loading}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-900"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-900 disabled:bg-gray-100 disabled:cursor-not-allowed"
                   placeholder="Subject"
                 />
               </div>
@@ -136,17 +185,19 @@ export default function ContactPage() {
                   name="message"
                   value={formData.message}
                   onChange={handleChange}
+                  disabled={loading}
                   required
                   rows={5}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-900"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-900 disabled:bg-gray-100 disabled:cursor-not-allowed"
                   placeholder="Your message..."
                 />
               </div>
               <button
                 type="submit"
-                className="w-full bg-amber-900 text-white font-semibold py-2 rounded-lg hover:bg-amber-800 transition"
+                disabled={loading}
+                className="w-full bg-amber-900 text-white font-semibold py-2 rounded-lg hover:bg-amber-800 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
               >
-                Send Message
+                {loading ? "Sending..." : "Send Message"}
               </button>
             </form>
           </div>
