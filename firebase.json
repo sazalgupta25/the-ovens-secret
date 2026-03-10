@@ -1,6 +1,7 @@
 {
   "hosting": {
-    "public": ".next/static",
+    "site": "the-ovens-secret",
+    "public": ".next",
     "ignore": [
       "firebase.json",
       "**/.*",
