@@ -2,7 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   // Removed: output: "standalone" - using default for Docker compatibility
-  output: "export", // Static export for Firebase Hosting
 
   // Image optimization
   images: {

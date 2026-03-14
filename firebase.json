@@ -1,16 +1,15 @@
 {
   "hosting": {
     "site": "the-ovens-secret",
-    "public": "out",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "public": "public",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
         "source": "**",
-        "destination": "/index.html"
+        "run": {
+          "serviceId": "the-ovens-secret",
+          "region": "us-central1"
+        }
       }
     ]
   }
