@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { Resend } from "resend";
 import { getClientIp, logSecurityEvent } from "@/app/lib/security";
 
 // ============================================================================
@@ -27,44 +28,42 @@ const ContactFormSchema = z.object({
 type ContactFormData = z.infer<typeof ContactFormSchema>;
 
 // ============================================================================
-// Email Service (Mock - Replace with Resend, SendGrid, or Nodemailer)
+// Email Service (using Resend)
 // ============================================================================
-async function sendEmail(data: ContactFormData): Promise<boolean> {
+async function sendEmail(data: ContactFormData): Promise<{ success: boolean; error?: any }> {
+  if (!process.env.RESEND_API_KEY) {
+    console.error("RESEND_API_KEY is not set. Cannot send email.");
+    return { success: false, error: "Email service is not configured." };
+  }
+
+  const resend = new Resend(process.env.RESEND_API_KEY);
+  const toEmail = process.env.CONTACT_EMAIL_TO || "contact@theovenssecret.com";
+
   try {
-    // TODO: Integrate with actual email service
-    // Options:
-    // 1. Resend (npm install resend)
-    // 2. SendGrid (npm install @sendgrid/mail)
-    // 3. Nodemailer (npm install nodemailer)
-    // 4. Your own email server
+    const result = await resend.emails.send({
+      from: "contact@theovenssecret.com",
+      to: toEmail,
+      replyTo: data.email,  
+      subject: `New Contact Form: ${data.subject}`,
+      html: `
+        <h2>New Contact Form Submission</h2>
+        <p><strong>Name:</strong> ${data.name}</p>
+        <p><strong>Email:</strong> ${data.email}</p>
+        <p><strong>Subject:</strong> ${data.subject}</p>
+        <p><strong>Message:</strong></p>
+        <p>${data.message.replace(/\n/g, "<br>")}</p>
+      `,
+    });
 
-    // For now, log to console (in production, use proper email service)
-    console.log("Email would be sent:", data);
+    if (result.error) {
+      console.error("Resend API error:", result.error);
+      return { success: false, error: result.error };
+    }
 
-    // Mock successful send
-    return true;
-
-    // Example with Resend:
-    // import { Resend } from "resend";
-    // const resend = new Resend(process.env.RESEND_API_KEY);
-    // const result = await resend.emails.send({
-    //   from: "contact@theovenssecret.com",
-    //   to: process.env.CONTACT_EMAIL_TO || "contact@theovenssecret.com",
-    //   replyTo: data.email,
-    //   subject: `New Contact Form: ${data.subject}`,
-    //   html: `
-    //     <h2>New Contact Form Submission</h2>
-    //     <p><strong>Name:</strong> ${data.name}</p>
-    //     <p><strong>Email:</strong> ${data.email}</p>
-    //     <p><strong>Subject:</strong> ${data.subject}</p>
-    //     <p><strong>Message:</strong></p>
-    //     <p>${data.message.replace(/\n/g, "<br>")}</p>
-    //   `,
-    // });
-    // return !result.error;
+    return { success: true };
   } catch (error) {
     console.error("Email send error:", error);
-    return false;
+    return { success: false, error };
   }
 }
 
@@ -119,9 +118,9 @@ export async function POST(request: NextRequest) {
     const validatedData = ContactFormSchema.parse(body);
 
     // Send email
-    const emailSent = await sendEmail(validatedData);
+    const emailResult = await sendEmail(validatedData);
 
-    if (!emailSent) {
+    if (!emailResult.success) {
       logSecurityEvent({
         type: "error",
         timestamp: new Date(),

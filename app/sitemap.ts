@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next';
 
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://theovenssecret.com';
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://the-ovens-secret.web.app';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = new Date();

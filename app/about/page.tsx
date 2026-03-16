@@ -25,7 +25,7 @@ export default function AboutPage() {
             </p>
             <p className="text-gray-700">
               We&rsquo;re dedicated to helping home bakers and professionals alike
-              master the craft of artisan baking, creating exceptional bread
+              master the craft of artisan baking, creating exceptional cakes and bread
               that delights the senses and nourishes the body.
             </p>
           </div>
