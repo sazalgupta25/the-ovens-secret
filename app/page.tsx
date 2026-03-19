@@ -1,6 +1,7 @@
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -88,13 +89,22 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* Add images of cakes here */}
               <div className="bg-gray-200 h-64 rounded-lg flex items-center justify-center">
-                <p className="text-gray-500">Cake Image 1</p>
+                <Image src="/cake/cake1.png" alt="Custom Cake 1" width={200} height={200} />
               </div>
               <div className="bg-gray-200 h-64 rounded-lg flex items-center justify-center">
-                <p className="text-gray-500">Cake Image 2</p>
+                <Image src="/cake/cake2.png" alt="Custom Cake 2" width={200} height={200} />
               </div>
               <div className="bg-gray-200 h-64 rounded-lg flex items-center justify-center">
-                <p className="text-gray-500">Cake Image 3</p>
+                <Image src="/cake/cake3.png" alt="Custom Cake 3" width={200} height={200} />
+              </div>
+              <div className="bg-gray-200 h-64 rounded-lg flex items-center justify-center">
+                <Image src="/cake/cake4.png" alt="Custom Cake 4" width={200} height={200} />
+              </div>
+              <div className="bg-gray-200 h-64 rounded-lg flex items-center justify-center">
+                <Image src="/cake/cake5.png" alt="Custom Cake 5" width={200} height={200} />
+              </div>
+              <div className="bg-gray-200 h-64 rounded-lg flex items-center justify-center">
+                <Image src="/cake/cake6.png" alt="Custom Cake 6" width={200} height={200} />
               </div>
             </div>
             <div className="text-center mt-8">

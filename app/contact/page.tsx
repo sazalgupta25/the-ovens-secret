@@ -95,22 +95,28 @@ export default function ContactPage() {
                 </h3>
                 <div className="flex gap-4">
                   <a
-                    href="#"
+                    href="https://www.facebook.com/priyakakhazana"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-amber-900 hover:text-amber-700 transition"
                   >
                     Facebook
                   </a>
                   <a
-                    href="#"
+                    href="https://www.instagram.com/_the_ovens_secret/"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-amber-900 hover:text-amber-700 transition"
                   >
                     Instagram
                   </a>
                   <a
-                    href="#"
+                    href="https://www.youtube.com/c/priyakakhazana"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-amber-900 hover:text-amber-700 transition"
                   >
-                    Twitter
+                    Youtube
                   </a>
                 </div>
               </div>
