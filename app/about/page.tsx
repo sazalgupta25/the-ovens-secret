@@ -1,82 +1,58 @@
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+"use client";
 
-export const metadata = {
-  title: "About Us | The Ovens Secret",
-  description: "Learn about The Ovens Secret and our mission to promote artisan baking",
-};
+import Header from "../components/Header";
+import { businessInfo } from "../data/menu";
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <>
       <Header />
-      <main className="max-w-6xl mx-auto px-4 py-12">
-        <h1 className="text-4xl font-bold text-amber-900 mb-8">About Us</h1>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12">
-          <div>
-            <h2 className="text-2xl font-bold text-amber-900 mb-4">
-              Our Mission
-            </h2>
-            <p className="text-gray-700 mb-4">
-              At The Ovens Secret, we believe that baking is both an art and a
-              science. Our mission is to share the knowledge and techniques that
-              have been perfected over decades of professional baking.
-            </p>
-            <p className="text-gray-700">
-              We&rsquo;re dedicated to helping home bakers and professionals alike
-              master the craft of artisan baking, creating exceptional cakes and bread
-              that delights the senses and nourishes the body.
+      <main className="min-h-screen bg-[#fdf6ee] py-12 px-4">
+        <div className="max-w-3xl mx-auto bg-white p-8 rounded-2xl shadow-lg border border-[#f0ddc0]">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-[#7b1f1f] text-center mb-6">
+            Welcome to The Oven's Secret
+          </h1>
+          <div className="text-center mb-8">
+            <p className="text-[#a0522d] text-lg">
+              Baked with Love by {businessInfo.baker}
             </p>
           </div>
-
-          <div className="bg-amber-50 p-6 rounded-lg border border-amber-200">
-            <h2 className="text-2xl font-bold text-amber-900 mb-4">
-              Why We Started
-            </h2>
-            <p className="text-gray-700">
-              Inspired by the enduring tradition of artisan baking and the joy
-              of creating something with your own hands, we founded The Ovens
-              Secret to preserve and promote these time-honored techniques in
-              the modern age.
+          <div className="prose prose-lg max-w-none text-[#5c2d1e] leading-relaxed">
+            <p>
+              Hello! I'm Priya Gupta, the heart and hands behind The Ovens
+              Secret. For me, baking has never been just about flour and sugar;
+              it's about love, family, and the joy of creating something
+              beautiful for a special moment.
+            </p>
+            <p>
+              It all started in my home kitchen, with a passion for creating
+              delicious treats for my own family's celebrations. I discovered
+              that a cake is more than just a dessert—it's a centerpiece for
+              our happiest memories. It’s the smile on a child's face, the
+              shared slice at a family gathering, the sweet beginning to a new
+              chapter.
+            </p>
+            <p>
+              What started as a hobby has blossomed into a passion I’m
+              thrilled to share with you. "The Ovens Secret" isn't a factory;
+              it's my home, my kitchen, and my commitment to quality. I use the
+              same wholesome ingredients and time-tested recipes that my own
+              family loves.
+            </p>
+            <p>
+              As an FSSAI-registered home baker, I take pride in every detail,
+              from our first conversation about your vision to the final,
+              delicate touches on your cake. Thank you for letting me be a
+              small part of your big moments. I can't wait to bake for you!
+            </p>
+            <p className="text-right font-semibold">
+              With love,
+              <br />
+              Priya Gupta
             </p>
           </div>
         </div>
-
-        <section className="mb-12">
-          <h2 className="text-2xl font-bold text-amber-900 mb-6">
-            What We Offer
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-6 bg-gray-50 rounded-lg">
-              <h3 className="text-xl font-bold text-amber-900 mb-2">
-                📖 Recipes
-              </h3>
-              <p className="text-gray-600">
-                Curated collection of proven recipes from around the world
-              </p>
-            </div>
-            <div className="p-6 bg-gray-50 rounded-lg">
-              <h3 className="text-xl font-bold text-amber-900 mb-2">
-                🎓 Tutorials
-              </h3>
-              <p className="text-gray-600">
-                Step-by-step guides and video tutorials for all skill levels
-              </p>
-            </div>
-            <div className="p-6 bg-gray-50 rounded-lg">
-              <h3 className="text-xl font-bold text-amber-900 mb-2">
-                💡 Tips & Tricks
-              </h3>
-              <p className="text-gray-600">
-                Expert insights and troubleshooting advice from experienced
-                bakers
-              </p>
-            </div>
-          </div>
-        </section>
       </main>
-      <Footer />
-    </div>
+    </>
   );
 }

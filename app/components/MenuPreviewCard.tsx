@@ -18,14 +18,14 @@ export function MenuPreviewCard() {
   };
 
   return (
-    <section className="py-16 bg-[#fdf6ee]">
+    <section className="py-16 bg-stone-100">
       <div className="max-w-5xl mx-auto px-4">
         {/* Section heading */}
         <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-[#7b1f1f] mb-2">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-stone-900 mb-2">
             Our Menu
           </h2>
-          <p className="text-[#a0522d] text-sm max-w-xs mx-auto">
+          <p className="text-stone-700 text-sm max-w-xs mx-auto">
             Freshly baked, no preservatives · Same day delivery within 5 km
           </p>
         </div>
@@ -36,15 +36,15 @@ export function MenuPreviewCard() {
             <Link
               key={cat.id}
               href={`/menu#${cat.id}`}
-              className="group bg-white rounded-2xl border border-[#f0ddc0] shadow-sm hover:shadow-md hover:border-[#c0392b] transition-all duration-200 p-4 text-center"
+              className="group bg-white rounded-2xl border border-stone-300 shadow-sm hover:shadow-md hover:border-stone-800 transition-all duration-200 p-4 text-center"
             >
               <div className="text-4xl mb-2 group-hover:scale-110 transition-transform duration-200">
                 {cat.emoji}
               </div>
-              <p className="font-bold text-[#5c2d1e] text-sm leading-tight mb-1">
+              <p className="font-bold text-stone-900 text-sm leading-tight mb-1">
                 {cat.title}
               </p>
-              <p className="text-[#c0392b] text-xs font-semibold">
+              <p className="text-stone-800 text-xs font-semibold">
                 {getPriceRange(cat.id)}
               </p>
             </Link>
@@ -55,7 +55,7 @@ export function MenuPreviewCard() {
         <div className="text-center space-y-3">
           <Link
             href="/menu"
-            className="inline-block bg-[#c0392b] text-white font-bold px-8 py-3 rounded-full shadow-md hover:shadow-lg hover:bg-[#a93226] transition-all duration-200"
+            className="inline-block bg-stone-800 text-stone-100 font-bold px-8 py-3 rounded-full shadow-md hover:shadow-lg hover:bg-stone-900 transition-all duration-200"
           >
             View Full Menu
           </Link>

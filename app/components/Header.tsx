@@ -1,18 +1,20 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Header() {
   return (
-    <header className="bg-amber-900 text-white shadow-lg sticky top-0 z-50">
+    <header className="header-bg text-stone-200 shadow-lg sticky top-0 z-50">
       <nav className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex items-center gap-8">
-          <Link href="/" className="text-3xl font-bold hover:text-amber-100 transition">
-            🔥 The Ovens Secret
+          <Link href="/" className="text-3xl font-bold hover:text-stone-300 transition flex items-center">
+            <Image src="/3.png" alt="The Oven's Secret" width={40} height={40} className="inline-block mr-2" />
+            The Ovens Secret
           </Link>
           <ul className="hidden md:flex gap-6 font-semibold">
             <li>
               <Link
                 href="/"
-                className="hover:text-amber-200 transition duration-200"
+                className="hover:text-stone-300 transition duration-200"
               >
                 Home
               </Link>
@@ -20,7 +22,7 @@ export default function Header() {
             <li>
               <Link
                 href="/menu"
-                className="hover:text-amber-200 transition duration-200"
+                className="hover:text-stone-300 transition duration-200"
               >
                 Menu
               </Link>
@@ -28,7 +30,7 @@ export default function Header() {
             <li>
               <a
                 href="/recipes"
-                className="hover:text-amber-200 transition duration-200"
+                className="hover:text-stone-300 transition duration-200"
               >
                 Recipes
               </a>
@@ -36,7 +38,7 @@ export default function Header() {
             <li>
               <a
                 href="/about"
-                className="hover:text-amber-200 transition duration-200"
+                className="hover:text-stone-300 transition duration-200"
               >
                 About
               </a>
@@ -44,7 +46,7 @@ export default function Header() {
             <li>
               <a
                 href="/contact"
-                className="hover:text-amber-200 transition duration-200"
+                className="hover:text-stone-300 transition duration-200"
               >
                 Contact
               </a>
@@ -55,7 +57,7 @@ export default function Header() {
         {/* Mobile Menu Indicator */}
         <div className="md:hidden">
           <button
-            className="text-2xl hover:text-amber-200 transition"
+            className="text-2xl hover:text-stone-300 transition"
             aria-label="Toggle menu"
           >
             ☰

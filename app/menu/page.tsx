@@ -90,7 +90,7 @@ function MenuSectionBlock({
         <h3 className="text-white font-bold text-base tracking-wide">{title}</h3>
         {servingSize && (
           <p className="text-[#f9c5b5] text-xs mt-0.5 flex items-center gap-1">
-            <span>🍗</span> {servingSize}
+            <span>🥐</span> {servingSize}
           </p>
         )}
       </div>
