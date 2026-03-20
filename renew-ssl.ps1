@@ -23,7 +23,7 @@ try {
 
 # Stop Docker containers
 Write-Host "🛑 Stopping Docker containers..." -ForegroundColor Yellow
-Set-Location C:\sazal\the-ovens-secret
+Set-Location $PSScriptRoot
 docker-compose -f docker-compose.prod.yml down
 
 Start-Sleep -Seconds 2

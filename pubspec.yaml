@@ -1,0 +1,29 @@
+name: the_ovens_secret
+description: "The Ovens Secret - Custom Cakes & Treats by Priya Gupta"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  go_router: ^14.8.1
+  url_launcher: ^6.3.1
+  google_fonts: ^6.2.1
+  flutter_animate: ^4.5.2
+  flutter_staggered_grid_view: ^0.7.0
+  photo_view: ^0.15.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/images/cake/

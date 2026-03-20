@@ -7,19 +7,10 @@ services:
       dockerfile: Dockerfile
     container_name: the-ovens-secret-dev
     ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=development
-      - NEXT_PUBLIC_APP_NAME=The Ovens Secret
-      - NEXT_PUBLIC_APP_DESCRIPTION=Discover the hidden wonders of artisan baking
-      - NEXT_PUBLIC_API_URL=http://localhost:3000/api
-    volumes:
-      - .:/app
-      - /app/node_modules
-      - /app/.next
+      - "8080:8080"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
       retries: 3

@@ -1,50 +1,46 @@
-# Stage 1: Build
-FROM node:22.13-alpine3.21 AS builder
+# Stage 1: Build Flutter Web
+FROM ghcr.io/cirruslabs/flutter:3.41.5 AS builder
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy project files
+COPY pubspec.yaml pubspec.lock* ./
+RUN flutter pub get
 
-# Install dependencies
-RUN npm ci
-
-# Copy source code
 COPY . .
 
-# Build the application
-RUN npm run build
+# Build Flutter web (release, with CanvasKit for rich rendering)
+RUN flutter build web --release
 
-# Stage 2: Runtime
-FROM node:22.13-alpine3.21
+# Stage 2: Serve with Nginx
+FROM nginx:alpine
 
-WORKDIR /app
+# Create non-root user
+RUN addgroup -g 1001 -S appuser && adduser -S appuser -u 1001
 
-# Install dumb-init to handle signals properly
-RUN apk add --no-cache dumb-init
+# Copy built web files
+COPY --from=builder /app/build/web /usr/share/nginx/html
 
-# Create a non-root user
-RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
+# Copy Nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Copy built application from builder
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./
-
-# Change ownership of app directory
-RUN chown -R nextjs:nodejs /app
-
-# Switch to non-root user
-USER nextjs
+# Change ownership
+RUN chown -R appuser:appuser /usr/share/nginx/html && \
+    chown -R appuser:appuser /var/cache/nginx && \
+    chown -R appuser:appuser /var/log/nginx && \
+    chown -R appuser:appuser /etc/nginx/conf.d && \
+    touch /var/run/nginx.pid && \
+    chown -R appuser:appuser /var/run/nginx.pid
 
 # Expose port
-EXPOSE 3000
+EXPOSE 8080
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3000', (r) => {if (r.statusCode !== 200) throw new Error(r.statusCode)})"
+  CMD wget --quiet --tries=1 --spider http://localhost:8080 || exit 1
 
-# Start application with dumb-init
-ENTRYPOINT ["dumb-init", "--"]
-CMD ["npm", "start"]
+# Run as non-root user
+USER appuser
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]
