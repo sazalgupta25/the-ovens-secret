@@ -3,7 +3,7 @@
 
 param(
     [string]$BackupPath = "C:\backups\the-ovens-secret",
-    [string]$SourcePath = "C:\sazal\the-ovens-secret",
+    [string]$SourcePath = $PSScriptRoot,
     [int]$DaysToKeep = 30
 )
 
@@ -23,12 +23,14 @@ Write-Host "📦 Backup file: $zipFile" -ForegroundColor Yellow
 try {
     # Include important files and directories
     $itemsToBackup = @(
-        "$SourcePath\app",
+        "$SourcePath\lib",
+        "$SourcePath\web",
+        "$SourcePath\assets",
         "$SourcePath\.env.production",
         "$SourcePath\nginx.conf",
         "$SourcePath\Dockerfile",
         "$SourcePath\docker-compose.prod.yml",
-        "$SourcePath\package.json"
+        "$SourcePath\pubspec.yaml"
     )
     
     # Filter to existing items only

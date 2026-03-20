@@ -1,41 +1,41 @@
-# Git
+# Version control
 .git
+.github
 .gitignore
-.gitattributes
-
-# Dependencies
-node_modules
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# Build outputs
-.next
-out
-dist
 
 # IDE
-.vscode
 .idea
+.vscode
+*.iml
 *.swp
-*.swo
-*~
-.DS_Store
 
-# Environment
-.env
-.env.local
-.env.*.local
+# Build artifacts (rebuilt in Docker)
+build/
+.dart_tool/
+.packages
 
-# Testing
-.jest
-coverage
-
-# Misc
+# Documentation
 *.md
-!README.md
-.github
+docs/
+LICENSE
 
-# CI/CD
-.github/workflows
+# Scripts
+*.sh
+*.ps1
+*.bat
+
+# Test
+test/
+*_test.dart
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Backup
+_backup_nextjs/
+
+# Legacy Node.js
+node_modules/
+.next/
+package*.json

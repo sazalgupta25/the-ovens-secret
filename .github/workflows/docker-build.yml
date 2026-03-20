@@ -13,44 +13,58 @@ jobs:
       id-token: 'write'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
+      # ---- Flutter Setup ----
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.5'
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Flutter Web
+        run: flutter build web --release
+
+      # ---- Google Cloud Auth ----
       - name: Authenticate to Google Cloud
         id: auth
-        uses: google-github-actions/auth@v1
+        uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: 'projects/837056944608/locations/global/workloadIdentityPools/theovenssecret/providers/github-provider'
-          service_account: 'github-action-1162900851@project-4eb9ff52-43b8-4ee6-a16.iam.gserviceaccount.com'
+          workload_identity_provider: 'projects/627136430501/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
+          service_account: 'github-action-1162908511@the-ovens-secret.iam.gserviceaccount.com'
           token_format: 'access_token'
 
       - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v1
+        uses: google-github-actions/setup-gcloud@v2
 
+      # ---- Docker Build & Push (Cloud Run) ----
       - name: Configure Docker
         run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
-
-      - name: Install dependencies
-        run: npm install
 
       - name: Build and Push Docker image
         run: |
           docker build \
-            -t us-central1-docker.pkg.dev/the-ovens-secret/the-ovens-secret/nextjs-app:${{ github.sha }} \
-            -t us-central1-docker.pkg.dev/the-ovens-secret/the-ovens-secret/nextjs-app:latest \
+            -t us-central1-docker.pkg.dev/the-ovens-secret/the-ovens-secret/flutter-web:${{ github.sha }} \
+            -t us-central1-docker.pkg.dev/the-ovens-secret/the-ovens-secret/flutter-web:latest \
             .
-          docker push us-central1-docker.pkg.dev/the-ovens-secret/the-ovens-secret/nextjs-app:${{ github.sha }}
-          docker push us-central1-docker.pkg.dev/the-ovens-secret/the-ovens-secret/nextjs-app:latest
+          docker push us-central1-docker.pkg.dev/the-ovens-secret/the-ovens-secret/flutter-web:${{ github.sha }}
+          docker push us-central1-docker.pkg.dev/the-ovens-secret/the-ovens-secret/flutter-web:latest
 
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy the-ovens-secret \
-            --image=us-central1-docker.pkg.dev/the-ovens-secret/the-ovens-secret/nextjs-app:${{ github.sha }} \
+            --image=us-central1-docker.pkg.dev/the-ovens-secret/the-ovens-secret/flutter-web:${{ github.sha }} \
             --platform=managed \
             --region=us-central1 \
             --allow-unauthenticated \
-            --port=3000 \
+            --port=8080 \
             --project=the-ovens-secret
 
+      # ---- Firebase Hosting (static files) ----
       - name: Deploy Firebase Hosting
         run: |
           npm install -g firebase-tools

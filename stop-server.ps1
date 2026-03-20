@@ -1,6 +1,6 @@
 # Safely stop The Ovens Secret server
 
-Set-Location C:\sazal\the-ovens-secret
+Set-Location $PSScriptRoot
 
 Write-Host ""
 Write-Host "======================================" -ForegroundColor Yellow
