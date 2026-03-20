@@ -10,6 +10,10 @@ import '../components/menu_preview_card.dart';
 import '../theme/app_theme.dart';
 import '../data/constants.dart';
 import '../data/menu_data.dart';
+import '../data/feedback_model.dart';
+import '../services/feedback_service.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -29,7 +33,7 @@ class HomePage extends StatelessWidget {
         // How to Order
         SliverToBoxAdapter(child: _HowToOrder()),
         // Testimonials
-        SliverToBoxAdapter(child: _Testimonials()),
+        SliverToBoxAdapter(child: _TestimonialsSection()),
         // CTA
         SliverToBoxAdapter(child: _CtaSection()),
       ],
@@ -388,7 +392,9 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _Testimonials() {
+  Widget _TestimonialsSection() {
+    final feedbackService = FeedbackService();
+
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -398,7 +404,7 @@ class HomePage extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 64, horizontal: 16),
       child: Center(
         child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 800),
+          constraints: const BoxConstraints(maxWidth: 900),
           child: Column(
             children: [
               Text(
@@ -409,19 +415,237 @@ class HomePage extends StatelessWidget {
                   color: AppColors.deepBurgundy,
                 ),
               ),
-              const SizedBox(height: 32),
-              _TestimonialCard(
-                '"The cake was not only beautiful but absolutely delicious! Priya is a true artist."',
-                '- A Happy Customer',
+              const SizedBox(height: 12),
+              Text(
+                'Your feedback makes our day! Share your experience with us.',
+                textAlign: TextAlign.center,
+                style: GoogleFonts.inter(
+                  fontSize: 16,
+                  color: AppColors.sienna,
+                ),
               ),
-              const SizedBox(height: 16),
-              _TestimonialCard(
-                '"I ordered a custom cake for my daughter\'s birthday and it was the highlight of the party. Thank you, Priya!"',
-                '- Another Satisfied Client',
+              const SizedBox(height: 32),
+              _WriteReviewButton(),
+              const SizedBox(height: 48),
+              StreamBuilder<List<CustomerFeedback>>(
+                stream: feedbackService.getFeedbackStream(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                        child: CircularProgressIndicator(
+                            color: AppColors.primaryRed));
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return Column(
+                      children: [
+                        _TestimonialCard(
+                          '"The cake was not only beautiful but absolutely delicious! Priya is a true artist."',
+                          '- A Happy Customer',
+                        ),
+                        const SizedBox(height: 16),
+                        _TestimonialCard(
+                          '"I ordered a custom cake for my daughter\'s birthday and it was the highlight of the party. Thank you, Priya!"',
+                          '- Another Satisfied Client',
+                        ),
+                      ],
+                    );
+                  }
+
+                  final feedbacks = snapshot.data!;
+                  return Column(
+                    children: feedbacks.map((feedback) {
+                      return Padding(
+                        padding: const EdgeInsets.only(bottom: 24),
+                        child: _TestimonialCard(
+                          '"${feedback.quote}"',
+                          '- ${feedback.author}',
+                        ),
+                      );
+                    }).toList(),
+                  );
+                },
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _WriteReviewButton() {
+    return Builder(builder: (context) {
+      return ElevatedButton.icon(
+        onPressed: () => _showFeedbackDialog(context),
+        icon: const Icon(Icons.edit_note, size: 20),
+        label: Text(
+          'Share Your Experience',
+          style: GoogleFonts.inter(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.deepBurgundy,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(50),
+          ),
+          elevation: 4,
+        ),
+      );
+    });
+  }
+
+  void _showFeedbackDialog(BuildContext context) {
+    final nameController = TextEditingController();
+    final quoteController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        backgroundColor: Colors.white,
+        title: Text(
+          'Share Your Feedback',
+          style: GoogleFonts.inter(
+            fontWeight: FontWeight.w700,
+            color: AppColors.deepBurgundy,
+          ),
+        ),
+        content: Container(
+          width: 400,
+          padding: const EdgeInsets.all(8),
+          child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Your Name',
+                    labelStyle: GoogleFonts.inter(color: AppColors.sienna),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: AppColors.primaryRed),
+                    ),
+                    prefixIcon: const Icon(Icons.person_outline,
+                        color: AppColors.sienna),
+                  ),
+                  validator: (value) =>
+                      value == null || value.isEmpty ? 'Please enter your name' : null,
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: quoteController,
+                  maxLines: 4,
+                  decoration: InputDecoration(
+                    labelText: 'Your Experience',
+                    alignLabelWithHint: true,
+                    labelStyle: GoogleFonts.inter(color: AppColors.sienna),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: AppColors.primaryRed),
+                    ),
+                    prefixIcon: const Padding(
+                      padding: EdgeInsets.only(bottom: 60.0),
+                      child: Icon(Icons.chat_bubble_outline,
+                          color: AppColors.sienna),
+                    ),
+                  ),
+                  validator: (value) =>
+                      value == null || value.isEmpty ? 'Please share your thoughts' : null,
+                ),
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel',
+                style: GoogleFonts.inter(color: AppColors.sienna)),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              if (formKey.currentState!.validate()) {
+                final navigator = Navigator.of(context);
+                final scaffoldMessenger = ScaffoldMessenger.of(context);
+                final user = FirebaseAuth.instance.currentUser;
+                
+                if (user == null) {
+                   scaffoldMessenger.showSnackBar(
+                    const SnackBar(content: Text('Please wait for auth...')),
+                  );
+                  return;
+                }
+
+                // Cyber-attack Guardrail 1: Local Rate Limiting
+                final prefs = await SharedPreferences.getInstance();
+                final lastSubmit = prefs.getInt('last_feedback_submit') ?? 0;
+                final now = DateTime.now().millisecondsSinceEpoch;
+                
+                // 1 minute timeout
+                if (now - lastSubmit < 60000) {
+                  scaffoldMessenger.showSnackBar(
+                    SnackBar(
+                      content: Text('Please wait a minute before submitting again!',
+                          style: GoogleFonts.inter()),
+                      backgroundColor: Colors.orange,
+                    ),
+                  );
+                  return;
+                }
+
+                final feedback = CustomerFeedback(
+                  author: nameController.text.trim(),
+                  quote: quoteController.text.trim(),
+                  date: DateTime.now(),
+                  userId: user.uid,
+                );
+                
+                // Guardrail 2: Security & Overwriting
+                // We use user.uid to store the document, ensuring 1 user = 1 review.
+                // This prevents spam as multiple submits just update the same record.
+                await FirebaseFirestore.instance
+                    .collection('customer_feedback')
+                    .doc(user.uid)
+                    .set(feedback.toJson());
+
+                // Store last submit time
+                await prefs.setInt('last_feedback_submit', now);
+                
+                navigator.pop();
+                
+                scaffoldMessenger.showSnackBar(
+                  SnackBar(
+                    content: Text('Thank you! Your experience has been saved.',
+                        style: GoogleFonts.inter()),
+                    backgroundColor: Colors.green,
+                  ),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primaryRed,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(50),
+              ),
+            ),
+            child: Text('Submit Review',
+                style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+          ),
+        ],
       ),
     );
   }
